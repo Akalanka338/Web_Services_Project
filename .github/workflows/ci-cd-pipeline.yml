@@ -38,8 +38,8 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag myapp:${{ github.sha }} dhanushkata102/myapp:v${{ github.sha }}
-          docker push dhanushkata102/myapp:v${{ github.sha }}
+          docker tag myapp:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/myapp:v${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:v${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,15 +49,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.2
-      with:
-        host: ec2-35-170-73-239.compute-1.amazonaws.com
-        username: ec2-user
-        key: ${{secrets.EC2_KEY}}
-        script: |
-          docker stop myapp || true
-          docker rm myapp || true
-          docker pull dhanushkata102/myapp:${{ github.sha }}
-          docker run -d -p 80:80 --name myapp dhanushkata102/myapp:${{ github.sha }}
-        port: 22
+    # - name: Deploy to EC2
+    #   uses: appleboy/ssh-action@v0.1.2
+    #   with:
+    #     host: ec2-35-170-73-239.compute-1.amazonaws.com
+    #     username: ec2-user
+    #     key: ${{secrets.EC2_KEY}}
+    #     script: |
+    #       docker stop myapp || true
+    #       docker rm myapp || true
+    #       docker pull dhanushkata102/myapp:${{ github.sha }}
+    #       docker run -d -p 80:80 --name myapp dhanushkata102/myapp:${{ github.sha }}
+    #     port: 22
